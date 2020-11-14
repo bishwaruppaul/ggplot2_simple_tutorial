@@ -1027,3 +1027,9 @@ Hope this tutorial was helpful.
 
 Bye!
 ]
+
+<br><br>
+### Credits:
+This tutorial was inspired by this amazing blog post: [link](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/)
+
+The presentation was made using [xaringan](https://github.com/yihui/xaringan) R package.
