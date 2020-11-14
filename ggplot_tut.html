@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>GGPLOT tutorial</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bishwarup Paul" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# GGPLOT tutorial
+### Bishwarup Paul
+
+---
+
+
+
+
+# What is GGPLOT?
+
+.pull-left[
+
+GG stands for **"Grammar of Graphics"**
+
+Defines a step-by-step method for building a graph.
+
+### Installation and usage:
+
+```
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+]
+
+.pull-right[
+
+### Based on:
+![Grammar of Graphics](./ggplot_tut_files/figure-html/ggbook.jpg)
+]
+
+---
+
+# The grammar of graphics
+
+.pull-left[
+### Steps of building a graph with ggplot
+
+- Start by defining data, x and y variables, colour/fill etc.
+- Mention plot type
+- Mention statistics to be shown
+- Mention slide title, x and y axis titles
+- Mention theme
+
+*The first two points are mandatory for a plot, rest are optional.*
+
+*There are many more commands and options, will come to them later.*
+]
+
+.pull-right[
+
+
+```r
+ggplot(data = data,
+    aes(x = xvar, 
+        y = yvar, 
+        colour=group)) +
+  
+  geom_point() +
+  
+  geom_errorbar() +
+  
+  labs(
+    title = "Main title",
+    x = "X axis title",
+    y = "Y axis title") + 
+  
+  theme_default()
+```
+]
+
+---
+
+# The data we are going to work with
+
+Data on penguins at Palmer Station, Antarctica LTER.
+
+
+```r
+library(palmerpenguins)
+data(package = "palmerpenguins")
+data(penguins)
+
+library(knitr)
+kable(head(penguins,5), format="html")
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; island &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; bill_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; bill_depth_mm &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; flipper_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; body_mass_g &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 181 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3750 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 186 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3800 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 195 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3250 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3450 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# A simple example
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+       aes(x=bill_length_mm, 
+        y=bill_depth_mm, 
+        colour=species))+
+  
+  geom_point()+
+      
+  labs(
+    title = "Penguins at Palmer Station",
+    x = "Bill length (mm)",
+    y = "Bill depth (mm)") + 
+  
+  theme_bw()
+```
+]
+
+.pull-right[
+![Example 1](./ggplot_tut_files/figure-html/ex1.svg)
+]
+
+---
+
+# ggplot themes
+
+
+
+![ggplot-themes](./ggplot_tut_files/figure-html/ex2.svg)
+
+---
+
+# A better theme for publication
+
+The following theme comes from the package "cowplot" (Claus O. Wilke’s plot package) [(Link)](https://wilkelab.org/cowplot/index.html)
+
+.pull-left[
+
+```r
+library(ggplot)
+library(cowplot)
+
+ggplot(data=penguins,
+       aes(x=bill_length_mm, 
+        y=bill_depth_mm, 
+        colour=species))+
+  
+  geom_point()+
+      
+  labs(
+    title = "Penguins at Palmer Station",
+    x = "Bill length (mm)",
+    y = "Bill depth (mm)") + 
+  
+  theme_cowplot()
+```
+]
+
+.pull-right[
+![Example 1](./ggplot_tut_files/figure-html/ex3.svg)]
+
+This theme comes with classic look for the plot, along with better text spacing, larger text and bold title.
+
+---
+
+# Customizing plot - changing axis limits
+
+If you go back and look at the plot in the previous slide, the axis ticks are not complete.
+
+We can easily solve that by adding `expand_limits` command.
+
+
+
+
+.pull-left[
+
+```r
+plt + 
+  expand_limits(x = c(30,60), y=c(12,22))
+```
+
+*The rest of the code is same as previous, so has been put inside ```plt```*
+]
+
+.pull-right[
+![axis-limits](./ggplot_tut_files/figure-html/ex4.svg)
+]
+
+---
+
+# Customizing plot - changing axis scaling
+
+In all the previous plots, the x and y axes were not in the same scale. If you require the axes to be in the same scale, that is easily doable.
+
+We just have to add `coord_equal()` command.
+
+
+
+```r
+plt + 
+  expand_limits(x = c(30,60), y=c(12,22)) +
+  coord_equal()
+```
+
+![axis-scale](./ggplot_tut_files/figure-html/ex5.svg)
+
+---
+
+# Customizing plot - changing text style
+
+You can do many things using the `theme()`  command, e.g. changing style, colour and angle of the texts.
+
+*Remember - this `theme()` command has to be used in addition to the `theme_cowplot()` (or other theme commands) that we are using.*
+
+.pull-left[
+
+
+```r
+plt + theme(
+  axis.title.x = element_text(face="bold"),
+  axis.title.y = element_text(face="bold"),
+  axis.text.x = element_text(angle=45),
+  axis.text.y = element_text(angle=45),
+  plot.title = element_text(face="bold", 
+                            color="blue"),
+  legend.title = element_text(face="bold", 
+                              color="red")
+  )
+```
+
+]
+
+.pull-right[
+
+![text-style](./ggplot_tut_files/figure-html/ex6.svg)
+
+]
+
+---
+
+# Plot types - Box and Whisker plot
+
+We have been using only scatterplots till now, using the command `geom_point()`.
+
+To make a box-and-whisker plot, or boxplot in short, use the command `geom_boxplot`.
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+      aes(x=species, 
+          y=body_mass_g, 
+          fill=species))+
+  
+      geom_boxplot()+
+      
+      labs(
+        title = "Box-and-Whisker plot",
+        x = "Species",
+        y = "Body mass (g)") + 
+  
+      theme_cowplot() + 
+  
+      theme(legend.position = "none")
+```
+]
+
+.pull-right[
+![boxplot](./ggplot_tut_files/figure-html/ex7.svg)
+]
+
+---
+
+# Plot types - Box and Whisker plot with jittered points
+
+One plot style which is becoming quite common is boxplots with jittered points overlayed on top, for better visualization of the data.
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+      aes(x=species, 
+          y=body_mass_g, 
+          fill=species))+
+  
+      geom_boxplot(outlier.shape=NA,
+                   show.legend=FALSE)+ 
+      geom_jitter(aes(fill=species),
+                  colour="black",
+                  shape=21,
+                  width=0.2,
+                  show.legend=FALSE)+
+      labs(
+        title = "Boxplot + jittered points",
+        x = "Species",
+        y = "Body mass (g)") + 
+  
+      theme_cowplot()
+```
+]
+
+.pull-right[
+![box-jitter](./ggplot_tut_files/figure-html/ex8.svg)
+]
+
+---
+
+# Alternatives to boxplot - Jitter plot
+
+In the previous slide, we plotted boxplots along with jittered points.
+
+But jittered points alone can also be a very useful plot for describing your data.
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+      aes(x=species, 
+          y=body_mass_g, 
+          colour=species))+
+  
+      geom_jitter(width=0.2, alpha=0.5,
+                  show.legend=FALSE)+
+      labs(
+        title = "jittered points",
+        x = "Species",
+        y = "Body mass (g)") + 
+  
+      theme_cowplot()
+```
+]
+
+.pull-right[
+![jitter](./ggplot_tut_files/figure-html/ex9.svg)
+]
+
+---
+
+# Alternatives to boxplot - boxplot + violin plot
+
+Another good alternative, which is being increasingly used nowadays, is combining boxplot with violin plot.
+
+It shows where you have most data points using kernel density.
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+      aes(x=species, 
+          y=body_mass_g, 
+          fill=species))+
+  
+      geom_violin(show.legend=FALSE,
+                  colour="transparent")+
+      geom_boxplot(show.legend=FALSE,
+                   width=0.2,
+                   fill="white")+
+  
+      labs(
+        title = "Boxplot + Violin plot",
+        x = "Species",
+        y = "Body mass (g)") + 
+  
+      theme_cowplot()
+```
+]
+
+.pull-right[
+![box-violin](./ggplot_tut_files/figure-html/ex10.svg)
+]
+
+
+---
+
+# Bar plots (mean-SD) - prepare data
+
+Bar plots which show mean and SD values are one of the most popular plots to be displayed in research articles, but making them in R is a little complicated.
+
+We need to first calculate the mean and SD of body mass for the three penguin species. We will do this with the help of the package `dplyr`. (click [link](https://rpubs.com/justmarkham/dplyr-tutorial) for a tutorial of `dplyr`)
+
+*We first divide the data into three species using `group_by` command, and then calculate the mean and SD using `summarise` command.*
+
+*The `%&gt;%` is called **pipe**, and used to pass output of one command to the next.*
+
+.pull-left[
+
+```r
+library(dplyr)
+
+penguins2&lt;-na.omit(penguins)
+pngSum &lt;- penguins2 %&gt;%
+  group_by(species) %&gt;%
+  summarise(mean=mean(body_mass_g),
+            sd=sd(body_mass_g))
+```
+]
+
+.pull-right[
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sd &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3706.164 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 458.6201 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3733.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 384.3351 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5092.437 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 501.4762 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+# Bar plots (mean-SD) - Create plot
+
+Mean values are used to create the bars with `geom_col` command, and SD values are used to create the error bars with `geom_errorbar` command.
+
+.pull-left[
+
+```r
+ggplot(pngSum, 
+       aes(species, mean,
+           fill=species))+
+  
+  geom_col()+
+  geom_errorbar(
+    aes(ymin=mean-sd, 
+        ymax=mean+sd),
+    width=0.3)+
+  
+  labs(x="Species",
+    y="Body Mass (g)",
+    title="Penguin body mass")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![barplot](./ggplot_tut_files/figure-html/ex12.svg)
+]
+
+---
+
+# Pie charts - prepare data
+
+Making pie charts in R is a little complicated, and the same holds true for ggplot. 
+
+First, we need to prepare the data. Here we are going to visualize the sample size of each species in a pie chart.
+
+.pull-left[
+
+```r
+# Count the numbers
+ad&lt;-length(which(penguins$species=="Adelie"))
+gt&lt;-length(which(penguins$species=="Gentoo"))
+cs&lt;-length(which
+           (penguins$species=="Chinstrap"))
+
+# Create a dataframe of counts
+count&lt;-c(ad, gt, cs)
+species&lt;-c("Adelie","Gentoo","Chinstrap")
+percent&lt;-round((count/sum(count))*100, 2)
+peng_count&lt;-data.frame(
+              count, species, percent, 
+              stringsAsFactors=TRUE)
+```
+]
+
+.pull-right[
+The data for pie chart looks like the table below. The percentages were calculated to use as labels for the slices in the chart.
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; count &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 152 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 44.19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 124 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 68 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.77 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+# Pie charts - Create pie chart
+
+.pull-left[
+
+```r
+ggplot(peng_count,aes(x="",y=count, 
+                  fill=species))+ 
+  
+  geom_bar(width=1,stat="identity")+
+  coord_polar("y", start=0)+
+  
+  theme_cowplot()+
+  theme(
+    axis.line=element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  )+
+  
+  geom_text(aes(
+    label=paste0(percent,"%")), 
+    position=position_stack(vjust=0.5))
+```
+
+]
+
+.pull-right[
+The trick to creating pie-chart is to first create a bar plot, and convert its coordinates to polar. 
+
+The axes have been removed completely for aesthetics, and the percentages have been added as slice labels in the plot.
+
+
+![pie](./ggplot_tut_files/figure-html/ex11.svg)
+]
+
+---
+
+# Scatter plot
+
+Making a scatter plot is very easy using the `geom_point` command.
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+       aes(x=body_mass_g,
+           y=flipper_length_mm,
+           colour=species))+
+  
+  geom_point()+
+  
+  labs(x="Body mass (g)",
+       y="Flipper length (mm)")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![scatterplot](./ggplot_tut_files/figure-html/ex13.svg)
+]
+
+---
+
+# Adding regression line to a scatter plot
+
+.pull-left[
+
+```r
+reg&lt;-lm(
+  flipper_length_mm ~ body_mass_g,
+  data=penguins)
+
+ggplot(data=penguins,
+    aes(x=body_mass_g,
+        y=flipper_length_mm,
+        colour=species))+
+  
+  geom_abline(
+   intercept=coefficients(reg)[1], 
+   slope=coefficients(reg)[2],
+   color="grey", size = 1.5)+
+  
+  geom_point()+
+  
+  labs(x="Body mass (g)",
+       y="Flipper length (mm)")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+*In this case, a linear regression was performed using `lm()` command, and the coefficients were used to draw a regression line using `geom_abline()` command.*
+
+![scatterplot-reg](./ggplot_tut_files/figure-html/ex14.svg)
+]
+
+---
+
+# Adding regression line - alternate method
+
+Instead of performing regression manually and using the coefficients to draw a line, you can use `stat_smooth` command to do it automatically.
+
+*The default in `stat_smooth` is LOESS ([link](http://r-statistics.co/Loess-Regression-With-R.html)) or GAM ([link](http://environmentalcomputing.net/intro-to-gams/)) smoothing, but a linear fit can easily be drawn using `method="lm"`. The grey area around the line is 95% confidence interval, and can be turned off using `se=FALSE`.*
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+       aes(x=body_mass_g,
+           y=flipper_length_mm,
+           colour=species))+
+  
+  geom_point()+
+  
+  stat_smooth(method="lm", 
+      col="#717171", size=1.2)+
+  
+  labs(x="Body mass (g)",
+       y="Flipper length (mm)")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![scatterplot-smooth](./ggplot_tut_files/figure-html/ex16.svg)
+]
+
+---
+
+# Adding horizontal and vertical lines
+
+Adding lines to show the mean (or other values) of the X and Y variable can be done using `geom_vline` and `geom_hline` commands.
+
+.pull-left[
+
+```r
+ggplot(data=na.omit(penguins),
+       aes(x=body_mass_g,
+           y=flipper_length_mm,
+           colour=species))+
+  
+  geom_vline(
+    aes(xintercept=mean(body_mass_g)),
+    size=1.2, color="grey")+
+  
+  geom_hline(
+    aes(yintercept=mean(flipper_length_mm)),
+    size=1.2, color="grey")+
+  
+  geom_point()+
+  
+  labs(x="Body mass (g)",
+       y="Flipper length (mm)")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![scatterplot-meanline](./ggplot_tut_files/figure-html/ex15.svg)
+]
+
+---
+
+# Histograms
+
+Histograms can be created easily by `geom_histogram` command. The command automatically uses an optimal number of bins, but the number can be changed using `binwidth` argument.
+
+*To ensure visibility of histograms for all groups, you can make them semi-transparent using `alpha` and `position="identity"` arguments.*
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+       aes(x=body_mass_g,
+           fill=species,
+           colour=species))+
+  
+  geom_histogram(alpha=0.5,
+        position="identity")+
+  
+    labs(x="Body mass (g)",
+       y="Frequency")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![histogram](./ggplot_tut_files/figure-html/ex17.svg)
+]
+
+---
+
+# Density plots
+
+Density plots represent data in a way similar to histograms, but instead of actual frequencies of x-axis values, it uses estimates of the probability density function of the variable in the x-axis ([link](https://www.data-to-viz.com/graph/density.html)).
+
+.pull-left[
+
+```r
+ggplot(data=penguins,
+       aes(x=body_mass_g,
+           fill=species,
+           colour=species))+
+  
+  geom_density(alpha=0.5,
+        position="identity")+
+  
+    labs(x="Body mass (g)",
+       y="Density")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![density](./ggplot_tut_files/figure-html/ex18.svg)]
+
+---
+
+# Ridge plots
+
+Ridge plots are becoming very popular to visualize the distribution of a variable across several groups ([link](https://www.data-to-viz.com/graph/ridgeline.html)). The `ggridges` package provides an add-on to ggplot for creating ridge plots.
+
+.pull-left[
+
+```r
+library(ggridges)
+
+ggplot(data=penguins,
+       aes(x=flipper_length_mm,
+           y=factor(year),
+           fill=species))+
+  
+  geom_density_ridges(
+    alpha=0.5, scale=0.9,
+    colour="white")+
+  
+  labs(x="Flipper length (mm)",
+       y="Year")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+*Year has been converted to a factor to create year categories. The `scale` argument prevents overlap of plot between years.*
+
+![ridge](./ggplot_tut_files/figure-html/ex19.svg)
+]
+
+---
+
+# Line plots - prepare data
+
+The data in the previous slide can also be visualized using a simple line plot. But to plot it we need to prepare the data first, i.e. calculate mean flipper lengths across species and years.
+
+.pull-left[
+
+```r
+lp &lt;- subset(penguins, 
+  select=c(species,flipper_length_mm,year))
+lp &lt;- na.omit(lp)
+lp$year &lt;- as.factor(lp$year)
+
+lp2 &lt;- lp %&gt;% 
+  group_by(species, year) %&gt;% 
+  summarise(mean=mean(flipper_length_mm))
+```
+
+We selected the required variables from penguins and put them into `lp`. Then we calculated mean values and put them into `lp2`.
+]
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 186.5918 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 191.0400 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 192.0769 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 192.4231 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 197.7222 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 198.0833 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 215.1176 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 217.5652 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 218.4186 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+# Line plot - create plot
+
+For creating a line plot, we will use `geom_line` for the lines and `geom_point` for the points. 
+
+*You can also use `geom_pointrange` instead of `geom_point` if you want errorbars - just make sure to calculate SD/SE beforehand.*
+
+.pull-left[
+
+```r
+ggplot(data=lp2,
+       aes(x=year,
+           y=mean,
+           group=species,
+           colour=species))+
+  
+  geom_line(size=1.2)+
+  geom_point(size=3)+
+  
+  labs(y="Flipper length (mm)",
+       x="Year")+
+  
+  theme_cowplot()
+```
+
+]
+
+.pull-right[
+![lineplot](./ggplot_tut_files/figure-html/ex20.svg)
+]
+---
+
+# Facets - using single grouping variable
+
+Facets are a useful way to divide plot according to grouping variables.
+
+Here are we are looking at the difference in body mass between males and females, and creating facets of species with the command `facet_wrap`.
+
+.pull-left[
+
+```r
+ggplot(data=na.omit(penguins),
+       aes(x=sex,
+           y=body_mass_g,
+           fill=sex))+
+  
+  geom_boxplot(width=0.5)+
+  
+  labs(x="Sex",
+       y="Body Mass (g)")+
+  
+  facet_wrap(~ species, nrow=1)+
+  
+  theme_cowplot()+
+  theme(legend.position = "n")
+```
+
+]
+
+.pull-right[
+![facet_wrap](./ggplot_tut_files/figure-html/ex21.svg)]
+
+---
+
+# Facets - using two grouping variables
+
+Facets can also be created using two grouping variables with `facet_grid` command.
+
+In this case we add one more variable - `island`, in the plot of the previous slide.
+
+.pull-left[
+
+```r
+ggplot(data=na.omit(penguins),
+       aes(x=sex,
+           y=body_mass_g,
+           fill=sex))+
+  
+  geom_boxplot(width=0.5)+
+  
+  labs(x="Sex",
+       y="Body Mass (g)")+
+  
+  facet_grid(island ~ species)+
+  
+  theme_cowplot()+
+  theme(legend.position = "n")
+```
+
+]
+
+.pull-right[
+![facet_grid](./ggplot_tut_files/figure-html/ex22.svg)]
+
+---
+
+# Plot grid
+
+Facets are useful when you are creating multiple plots of the same plot type and with the same data, but does not work when you want to combine multiple plots.
+
+.pull-left[
+
+```r
+p1 &lt;- ggplot(
+    data=penguins,
+    aes(x=species,y=body_mass_g,
+        fill=species))+
+    geom_boxplot(width=0.5)+
+    theme_cowplot()+
+    theme(legend.position = "n")
+
+p2 &lt;- ggplot(
+    data=penguins,
+    aes(x=body_mass_g,y=bill_length_mm,
+      colour=species))+
+    geom_point()+
+    theme_cowplot()+
+    theme(legend.position = "n")
+
+plot_grid(p1,p2,nrow=1,
+          labels=c("A","B"))
+```
+
+]
+
+.pull-right[
+*`plot_grid` command from `cowplot` package is extremely useful when you are creating a multi-panel plot for publication.*
+
+&lt;br&gt;
+
+![plot_grid](./ggplot_tut_files/figure-html/ex23.svg)]
+
+---
+
+# Custom colours 1 - colour brewer
+
+ggplot has a lot of options for changing the colour scheme of plots. One of them is `scale_colour_brewer`, useful for using in categorical variables.
+
+*Palette `Dark2` is being used here. For other available palettes, take a look at the help file.*
+
+.pull-left[
+
+```r
+ggplot(
+  data=penguins,
+  aes(x=body_mass_g,y=bill_length_mm,
+      colour=species))+
+  
+  geom_point()+
+  
+  theme_cowplot()+
+  
+  labs(x="Body mass (g)",
+         y="Bill length (mm)",
+         title="Palette Dark2")+
+
+  scale_colour_brewer(palette="Dark2")
+```
+
+]
+
+.pull-right[
+![colourbrewer](./ggplot_tut_files/figure-html/ex24.svg)]
+
+---
+
+# Custom colours 2 - continuous colours
+
+For colouring continuous variables, `scale_colour_gradient` can be used.
+
+*the command has its own default colours, but for demonstration we are using a custom colour palette here.*
+
+.pull-left[
+
+```r
+ggplot(
+  data=penguins,
+  aes(x=body_mass_g,y=bill_length_mm,
+      colour=body_mass_g))+
+  
+  geom_point()+
+  theme_cowplot()+
+  
+  labs(x="Body mass (g)",
+       y="Bill length (mm)",
+       title="scale_colour_gradient")+
+
+  scale_colour_gradient(
+    high="red",low="blue",
+    "Body mass")
+```
+
+]
+
+.pull-right[
+![colour_gradient](./ggplot_tut_files/figure-html/ex25.svg)]
+
+---
+
+# Custom colours 3 - Viridis palette
+
+Viridis is a very popular colour palette, suitable for people with colour-blindness and for printing in grayscale.
+
+*Viridis is useful for both continuous and categorical variables.*
+
+.pull-left[
+
+```r
+library(viridis)
+
+ggplot(
+  data=penguins,
+  aes(x=body_mass_g,y=bill_length_mm,
+      colour=body_mass_g))+
+  
+  geom_point()+
+  theme_cowplot()+
+  
+  labs(x="Body mass (g)",
+       y="Bill length (mm)",
+       title="Viridis palette")+
+
+  scale_colour_viridis("Body mass")
+```
+
+]
+
+.pull-right[
+![viridis](./ggplot_tut_files/figure-html/ex26.svg)]
+
+---
+
+# Try it out yourself
+
+.pull-left[
+What I have shown here is just the tip of the iceberg. 
+
+ggplot is an amazing visualization package, and there are lot more plot types, options and customization available.
+]
+
+.pull-right[
+Try it our yourself to see the possibilities.
+
+Hope this tutorial was helpful.
+
+Bye!
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
