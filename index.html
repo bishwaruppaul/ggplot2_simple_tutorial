@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>GGPLOT tutorial</title>
+    <title>Plotting with ggplot2 in R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Bishwarup Paul" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -12,7 +13,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# GGPLOT tutorial
+# Plotting with ggplot2 in R
 ### Bishwarup Paul
 
 ---
@@ -445,9 +446,9 @@ ggplot(data=penguins,
 
 ---
 
-# Bar plots (mean-SD) - prepare data
+# Column charts (mean-SD) - prepare data
 
-Bar plots which show mean and SD values are one of the most popular plots to be displayed in research articles, but making them in R is a little complicated.
+Column charts which show mean and SD values are one of the most popular plots to be displayed in research articles, but making them in R is a little complicated.
 
 We need to first calculate the mean and SD of body mass for the three penguin species. We will do this with the help of the package `dplyr`. (click [link](https://rpubs.com/justmarkham/dplyr-tutorial) for a tutorial of `dplyr`)
 
@@ -501,9 +502,9 @@ pngSum &lt;- penguins2 %&gt;%
 
 ---
 
-# Bar plots (mean-SD) - Create plot
+# Column charts (mean-SD) - Create plot
 
-Mean values are used to create the bars with `geom_col` command, and SD values are used to create the error bars with `geom_errorbar` command.
+Mean values are used to create the columns with `geom_col` command, and SD values are used to create the error bars with `geom_errorbar` command.
 
 .pull-left[
 
@@ -512,7 +513,7 @@ ggplot(pngSum,
        aes(species, mean,
            fill=species))+
   
-  geom_col()+
+  geom_col(show.legend=F)+
   geom_errorbar(
     aes(ymin=mean-sd, 
         ymax=mean+sd),
@@ -528,7 +529,135 @@ ggplot(pngSum,
 ]
 
 .pull-right[
-![barplot](./ggplot_tut_files/figure-html/ex12.svg)
+![column-chart](./ggplot_tut_files/figure-html/ex12.svg)
+]
+
+---
+
+# Side-by-side Column charts - prepare data
+
+Side-by-side column charts are a great way to visualize more than two categorical variables in the same plot. 
+
+The data preparation is the same as before, but in this case we calculate the mean and SD values for two grouping variables instead of one.
+
+.pull-left[
+
+```r
+library(dplyr)
+penguins2&lt;-na.omit(penguins)
+pngSum2 &lt;- penguins2 %&gt;%
+  group_by(species,sex) %&gt;%
+  summarise(mean=mean(body_mass_g),
+            sd=sd(body_mass_g))
+```
+
+]
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sd &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3368.836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 269.3801 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4043.493 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 346.8116 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3527.206 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 285.3339 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3938.971 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 362.1376 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4679.741 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 281.5783 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5484.836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 313.1586 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+---
+
+# Side-by-side Column charts - Create plot
+
+The commands for plotting is similar to the normal column chart. You only need to add `position="dodge"` in the `geom_col()` command. 
+
+As we are also showing errorbars in this plot, the same command has to be used in `geom_errorbar()`. To position the errobars at the centre of the columns, instead of using `position="dodge"`, the function `position_dodge()` is being used here with an appropriate position.
+
+.pull-left[
+
+```r
+ggplot(pngSum2, 
+       aes(species, mean,
+           fill=sex))+
+  geom_col(position='dodge')+
+  geom_errorbar(
+    aes(ymin=mean-sd, 
+        ymax=mean+sd),
+    width=0.3,
+    position=position_dodge(0.9))+
+  labs(x="Species",
+       y="Body Mass (g)",
+       title="Penguin body mass")+
+  theme_cowplot()
+```
+
+![](index_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![side-by-side-column](./ggplot_tut_files/figure-html/ex12a.svg)
+]
+
+---
+
+# Bar charts
+
+Bar charts (a.k.a horizontal bar charts) are considered by some to be superior to column charts. Bar charts are said to be easier in the eyes, as well as it is easier to make comparisons among the horizontal bars than vertical columns in a plot.
+
+Making a bar chart is very easy - you just to need add the command `coord_flip()` in the plot, which flips the X and Y axes. We are using the same plot as before, so the rest of the commands have been omitted.
+
+.pull-left[
+
+```r
+plot + 
+  coord_flip()
+```
+
+]
+
+.pull-right[
+![bar-chart](./ggplot_tut_files/figure-html/ex12b.svg)
 ]
 
 ---
